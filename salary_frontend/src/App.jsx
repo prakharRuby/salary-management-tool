@@ -1,133 +1,132 @@
 import { useEffect, useState } from "react";
 import api from "./services/api";
+
 import DashboardCards from "./components/DashboardCards";
 import EmployeeTable from "./components/EmployeeTable";
 import EmployeeForm from "./components/EmployeeForm";
 
 function App() {
+
   const [employees, setEmployees] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [insights, setInsights] = useState({});
+
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const [page, setPage] = useState(1);
+  const [openForm, setOpenForm] = useState(false);
+  const [editEmployee, setEditEmployee] = useState(null);
+
+
   const [country, setCountry] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
+  const [job, setJob] = useState("");
 
-  const [open, setOpen] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const perPage = 10;
 
-  const loadData = async () => {
-    const empRes = await api.get("/employees");
-    const insightRes = await api.get("/insights", {
+  const load = async () => {
+    const emp = await api.get("/employees");
+
+    const insight = await api.get("/insights", {
       params: {
         country,
-        job_title: jobTitle
+        job_title: job
       }
     });
 
-    setEmployees(empRes.data);
-    setFiltered(empRes.data);
-    setInsights(insightRes.data);
+    setEmployees(emp.data);
+    setFiltered(emp.data);
+    setInsights(insight.data);
   };
 
   useEffect(() => {
-  loadData();
-}, [country, jobTitle]);
+    load();
+  }, [country, job]);
 
   useEffect(() => {
-    const result = employees.filter((emp) =>
-      emp.full_name.toLowerCase().includes(search.toLowerCase())
+    if (!search) {
+      setFiltered(employees);
+      return;
+    }
+
+    const res = employees.filter((e) =>
+      e.full_name.toLowerCase().includes(search.toLowerCase())
     );
-    setFiltered(result);
+
+    setFiltered(res);
+    setPage(1);
   }, [search, employees]);
 
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const visible = filtered.slice(start, end);
+
+  const totalPages = Math.ceil(filtered.length / perPage);
+
   const openAdd = () => {
-    setSelectedEmployee(null);
-    setOpen(true);
+    setEditEmployee(null);
+    setOpenForm(true);
   };
 
   const openEdit = (emp) => {
-    setSelectedEmployee(emp);
-    setOpen(true);
+    setEditEmployee(emp);
+    setOpenForm(true);
   };
 
-const indexOfLast = currentPage * rowsPerPage;
-const indexOfFirst = indexOfLast - rowsPerPage;
-const currentEmployees = filtered.slice(indexOfFirst, indexOfLast);
-
-const totalPages = Math.ceil(filtered.length / rowsPerPage);
-
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Salary Management Dashboard</h1>
+    <div style={{ padding: "20px", background: "#f5f7fb", minHeight: "100vh" }}>
+      <h2>Salary Dashboard</h2>
 
       <DashboardCards insights={insights} />
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px"
-        }}
-      >
+      <div style={{ display: "flex", gap: "10px", margin: "15px 0" }}>
         <input
-          placeholder="Search employee..."
+          placeholder="Search employee"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select
-  value={country}
-  onChange={(e) => setCountry(e.target.value)}
->
-  <option value="">All Countries</option>
-  <option value="India">India</option>
-  <option value="USA">USA</option>
-  <option value="UK">UK</option>
-  <option value="Canada">Canada</option>
-</select>
 
-<select
-  value={jobTitle}
-  onChange={(e) => setJobTitle(e.target.value)}
->
-  <option value="">All Job Titles</option>
-  <option value="Engineer">Engineer</option>
-  <option value="Manager">Manager</option>
-  <option value="HR">HR</option>
-  <option value="Designer">Designer</option>
-</select>
+        <select value={country} onChange={(e) => setCountry(e.target.value)}>
+          <option value="">Country</option>
+          <option value="India">India</option>
+          <option value="USA">USA</option>
+        </select>
 
-        <button onClick={openAdd}>+ Add Employee</button>
+        <select value={job} onChange={(e) => setJob(e.target.value)}>
+          <option value="">Job</option>
+          <option value="Engineer">Engineer</option>
+          <option value="Manager">Manager</option>
+        </select>
+
+        <button onClick={openAdd}>Add</button>
       </div>
 
       <EmployeeTable
-        employees={currentEmployees}
-        refresh={loadData}
+        employees={visible}
         onEdit={openEdit}
+        refresh={load}
       />
-      <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
+
+      <div style={{ marginTop: 10 }}>
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
           Prev
         </button>
 
-        <span>Page {currentPage} of {totalPages}</span>
+        <span style={{ margin: "0 10px" }}>
+          {page} / {totalPages}
+        </span>
 
         <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
         >
           Next
         </button>
       </div>
+
       <EmployeeForm
-        refresh={loadData}
-        employee={selectedEmployee}
-        open={open}
-        setOpen={setOpen}
+        open={openForm}
+        setOpen={setOpenForm}
+        employee={editEmployee}
+        refresh={load}
       />
     </div>
   );
