@@ -1,0 +1,42 @@
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "employees"[0m
+  [1m[35m (1.2ms)[0m  [1m[35mCREATE TABLE "employees" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "full_name" varchar, "email" varchar, "job_title" varchar, "country" varchar, "salary" decimal, "department" varchar, "hire_date" date, "status" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260429111717)[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.1ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-04-29 13:27:57.300367', '2026-04-29 13:27:57.300371') RETURNING "key"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '95afa74e4908e42450f708e76ad508e1ca32b987', '2026-04-29 13:27:57.301485', '2026-04-29 13:27:57.301488') RETURNING "key"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mrollback transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[31mrollback transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mEmployee Create (0.4ms)[0m  [1m[32mINSERT INTO "employees" ("full_name", "email", "job_title", "country", "salary", "department", "hire_date", "status", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["full_name", "A"], ["email", "[FILTERED]"], ["job_title", "Engineer"], ["country", "India"], ["salary", 40000.0], ["department", nil], ["hire_date", nil], ["status", nil], ["created_at", "2026-04-29 13:27:57.441531"], ["updated_at", "2026-04-29 13:27:57.441531"]]
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mEmployee Create (0.3ms)[0m  [1m[32mINSERT INTO "employees" ("full_name", "email", "job_title", "country", "salary", "department", "hire_date", "status", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["full_name", "B"], ["email", "[FILTERED]"], ["job_title", "Engineer"], ["country", "India"], ["salary", 60000.0], ["department", nil], ["hire_date", nil], ["status", nil], ["created_at", "2026-04-29 13:27:57.444170"], ["updated_at", "2026-04-29 13:27:57.444170"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Started GET "/insights?country=India" for 127.0.0.1 at 2026-04-29 18:57:57 +0530
+Processing by InsightsController#index as HTML
+  Parameters: {"country"=>"India"}
+  [1m[36mEmployee Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees" WHERE "employees"."country" = ?[0m  [["country", "India"]]
+  [1m[36mEmployee Minimum (0.1ms)[0m  [1m[34mSELECT MIN("employees"."salary") FROM "employees" WHERE "employees"."country" = ?[0m  [["country", "India"]]
+  [1m[36mEmployee Maximum (0.1ms)[0m  [1m[34mSELECT MAX("employees"."salary") FROM "employees" WHERE "employees"."country" = ?[0m  [["country", "India"]]
+  [1m[36mEmployee Average (0.1ms)[0m  [1m[34mSELECT AVG("employees"."salary") FROM "employees" WHERE "employees"."country" = ?[0m  [["country", "India"]]
+Completed 200 OK in 8ms (Views: 0.4ms | ActiveRecord: 0.3ms (4 queries, 0 cached) | GC: 0.5ms)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mrollback transaction[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mbegin transaction[0m
+Started POST "/employees" for 127.0.0.1 at 2026-04-29 18:57:57 +0530
+Processing by EmployeesController#create as HTML
+  Parameters: {"employee"=>{"full_name"=>"John Doe", "job_title"=>"Manager", "country"=>"USA", "salary"=>"70000"}}
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mSAVEPOINT active_record_1[0m
+  [1m[36mEmployee Create (0.4ms)[0m  [1m[32mINSERT INTO "employees" ("full_name", "email", "job_title", "country", "salary", "department", "hire_date", "status", "created_at", "updated_at") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING "id"[0m  [["full_name", "John Doe"], ["email", "[FILTERED]"], ["job_title", "Manager"], ["country", "USA"], ["salary", 70000.0], ["department", nil], ["hire_date", nil], ["status", nil], ["created_at", "2026-04-29 13:27:57.474248"], ["updated_at", "2026-04-29 13:27:57.474248"]]
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[35mRELEASE SAVEPOINT active_record_1[0m
+Completed 201 Created in 2ms (Views: 0.4ms | ActiveRecord: 0.5ms (1 query, 0 cached) | GC: 0.1ms)
+  [1m[36mEmployee Count (0.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "employees"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[31mrollback transaction[0m

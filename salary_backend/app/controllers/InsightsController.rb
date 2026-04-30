@@ -1,23 +1,13 @@
 class InsightsController < ApplicationController
   def index
-    country = params[:country]
-    job_title = params[:job_title]
+    employee = Employee.all
+    employee = employee.where(country: params[:country]) if params[:country].present?
 
-    scope = Employee.all
-    scope = scope.where(country: country) if country.present?
+    data = {total_employees: employee.count,min_salary: employee.minimum(:salary),max_salary: employee.maximum(:salary),avg_salary: employee.average(:salary).to_f.round(2)}
 
-    data = {
-      total_employees: scope.count,
-      min_salary: scope.minimum(:salary),
-      max_salary: scope.maximum(:salary),
-      avg_salary: scope.average(:salary).to_f.round(2)
-    }
-
-    if country.present? && job_title.present?
-      job_scope = Employee.where(country: country, job_title: job_title)
-
-      data[:job_title_avg_salary] =
-        job_scope.average(:salary).to_f.round(2)
+    if params[:country].present? && params[:job_title].present?
+      job_scope = Employee.where(country: params[:country], job_title: params[:job_title])
+      data[:job_title_avg_salary] = job_scope.average(:salary).to_f.round(2)
     end
 
     render json: data
