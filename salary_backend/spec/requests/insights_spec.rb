@@ -1,17 +1,28 @@
 require "rails_helper"
 
-RSpec.describe "Employees", type: :request do
-  it "creates employee" do
-    post "/employees", params: {
-      employee: {
-        full_name: "John Doe",
-        job_title: "Manager",
-        country: "USA",
-        salary: 70000
-      }
-    }
+RSpec.describe "Insights", type: :request do
+  before do
+    Employee.create!(
+      full_name: "A",
+      job_title: "Engineer",
+      country: "India",
+      salary: 40000
+    )
 
-    expect(response.status).to eq(201)
-    expect(Employee.count).to eq(1)
+    Employee.create!(
+      full_name: "B",
+      job_title: "Engineer",
+      country: "India",
+      salary: 60000
+    )
+  end
+
+  it "returns country salary insights" do
+    get "/insights", params: { country: "India" }
+
+    json = JSON.parse(response.body)
+
+    expect(json["min_salary"]).to eq("40000.0")
+    expect(json["max_salary"]).to eq("60000.0")
   end
 end
